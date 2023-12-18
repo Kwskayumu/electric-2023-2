@@ -266,7 +266,7 @@ wire carryout;
 			7'b0111001: ledout <= 10'b0100000000 + (bally << 3) + ballx;
 			7'b0111010: ledout <= 10'b0100000000 + (bally << 3) + ballx;
 			
-			default : ;
+			default : ledout <= 0;
 			
 		endcase
 				
