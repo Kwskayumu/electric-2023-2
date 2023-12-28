@@ -187,6 +187,7 @@ wire carryout;
     always @ (posedge CLK or negedge RSTn) 	
         case(color)
 			// バー1の表示
+			// 長さに応じて表示を変える必要がある
 			7'b0000000: ledout <= 10'b1001101000 + bar1;
 			7'b0000001: ledout <= 10'b1001101000 + bar1 + 2'b01;
 			7'b0000010: ledout <= 10'b1001101000 + bar1 + 2'b10;
