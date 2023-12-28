@@ -13,12 +13,9 @@ reg [2:0] bar1;
 reg [2:0] bar2;
 reg [2:0] ballx;
 reg [3:0] bally;
-// reg [2:0] ball2x;
-// reg [3:0] ball2y;
 
 reg [1:0] wall;
 reg [1:0] top;
-// reg [1:0] top2;
 reg [21:0] prescaler;
 reg [30:0] prescaler_ball;
 reg [6:0] color;
@@ -64,7 +61,6 @@ wire carryout;
     end
 
     //change bar1 position by switch
-	//
 	always @ (posedge CLK or negedge RSTn) 	begin	
 		if (RSTn == 1'b0) 		begin
 			bar1 <= 3'b000;
@@ -93,8 +89,7 @@ wire carryout;
 		end
 	end
 
-        //change bar2 position by switch
-	//
+    //change bar2 position by switch
 	always @ (posedge CLK or negedge RSTn) 	begin	
 		if (RSTn == 1'b0) 		begin
 			bar2 <= 3'b101;
@@ -123,7 +118,7 @@ wire carryout;
 		end
 	end
 	
-	            //ball move
+	//ball move
     // 10bit up counter that counts up at carryout = 1;
 	always @ (posedge CLK or negedge RSTn) 	begin	
 		if(RSTn == 1'b0) begin
@@ -141,41 +136,23 @@ wire carryout;
 			ballx <= ballx;
 			bally <= bally; 
 			top <= 1;
-		
-		// end else if(top2 == 1 && ball2y == 4'b1100 && (ball2x == bar1 || ball2x == bar1 +3'b1 || ball2x == bar1 +3'b10)) begin		
-		// 	ballx <= ball2x;
-		// 	bally <= ball2y;   
 
-		// end else if(top2 == 0 && ball2y == 4'b0011 && (ball2x == bar2 || ball2x == bar2 +3'b1 || ball2x == bar2 +3'b10)) begin		
-		// 	ballx <= ball2x;
-		// 	bally <= ball2y;  
-		
 		end else if(top == 0) 	begin	//down
         
-				  
 		   if(bally == 4'b0000 && carryout_ball == 1'b1) 	begin	
-			//   ballx <= bar2 + 3'b1;
-			//   bally <= 4'b0011;
-			//   top <= 1;
 			ballx <= ballx;
 			bally <= bally;
 
-			
 		   end else if(carryout_ball == 1'b1)  	begin	
 				bally <= bally - 3'b1;
 				
          end else 		
 				bally <= bally;
 		end
-		  
-		  
-		  
+		  	  
 		else if(top == 1) 		begin //up
 		  
 		  if(bally == 4'b1111 && carryout_ball == 1'b1) 		begin
-			//   ballx <= bar1 + 3'b1;
-			//   bally <= 4'b1100;
-			//   top <= 0;
 			ballx <= ballx;
 			bally <= bally;
 	
@@ -187,67 +164,8 @@ wire carryout;
 		end
 		  
 	end
-	
 
-            //ball2 move
-    // 10bit up counter that counts up at carryout = 1;
-	// always @ (posedge CLK or negedge RSTn) 	begin	
-	// 	if(RSTn == 1'b0) begin
-	// 		ball2y <= 4'b0011;
-	// 		ball2x <= bar2 + 3'b1;
-	// 		top2 <= 1;
-	// 	end else if(top2 == 1 && ball2y == 4'b1100 && (ball2x == bar1 || ball2x == bar1 +3'b1 || ball2x == bar1 +3'b10)) begin		
-	// 		ball2x <= ball2x;
-	// 		ball2y <= ball2y;   
-
-	// 	end else if(top2 == 0 && ball2y == 4'b0011 && (ball2x == bar2 || ball2x == bar2 +3'b1 || ball2x == bar2 +3'b10)) begin		
-	// 		ball2x <= ball2x;
-	// 		ball2y <= ball2y;    
-		
-	// 	end else if(top == 1 && bally == 4'b1100 && (ballx == bar1 || ballx == bar1 +3'b1 || ballx == bar1 +3'b10)) begin		
-	// 		ball2x <= ballx;
-	// 		ball2y <= bally;   
-
-	// 	end else if(top == 0 && bally == 4'b0011 && (ballx == bar2 || ballx == bar2 +3'b1 || ballx == bar2 +3'b10)) begin		
-	// 		ball2x <= ballx;
-	// 		ball2y <= bally; 
-		
-	// 	end else if(top2 == 0) 	begin	//down
-        
-				  
-	// 	   if(ball2y == 4'b0000 && carryout_ball == 1'b1) 	begin	
-	// 		  ball2x <= bar2 + 3'b1;
-	// 		  ball2y <= 4'b0011;
-	// 		  top2 <= 1;
-
-			
-	// 	   end else if( carryout_ball == 1'b1)  	begin	
-	// 			ball2y <= ball2y - 3'b1;
-				
-    //      end else 		
-	// 			ball2y <= ball2y;
-	// 	end
-		  
-		  
-		  
-	// 	else if(top2 == 1) 		begin //up
-		  
-	// 	  if(ball2y == 4'b1111 && carryout_ball == 1'b1) 		begin
-	// 		  ball2x <= bar1 + 3'b1;
-	// 		  ball2y <= 4'b1100;
-	// 		  top2 <= 0;
-	
-	// 	  end else if( carryout_ball == 1'b1)  begin		
-	// 			ball2y <= ball2y + 3'b1;
-				
-    //     end else 		
-	// 			ball2y <= ball2y;
-	// 	end
-		  
-	// end
-	
-
-	      // 10bit up ledout that counts up at carryout = 1;
+	// 10bit up ledout that counts up at carryout = 1;
     always @ (posedge CLK or negedge RSTn) 	
         case(color)
 			7'b0000000: ledout <= 10'b1001101000 + bar1;
@@ -258,10 +176,6 @@ wire carryout;
 			7'b0000100: ledout <= 10'b1000010000 + bar2 + 2'b01;
 			7'b0000110: ledout <= 10'b1000010000 + bar2 + 2'b10;
 
-            // 7'b1001000: ledout <= 10'b0100000000 + (ball2y << 3) + ball2x;
-            // 7'b1001001: ledout <= 10'b0100000000 + (ball2y << 3) + ball2x;
-            // 7'b1001010: ledout <= 10'b0100000000 + (ball2y << 3) + ball2x;
-				
 			7'b0111000: ledout <= 10'b0100000000 + (bally << 3) + ballx;
 			7'b0111001: ledout <= 10'b0100000000 + (bally << 3) + ballx;
 			7'b0111010: ledout <= 10'b0100000000 + (bally << 3) + ballx;
