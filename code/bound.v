@@ -1,5 +1,4 @@
-// 反射角度を変えてみる
-// 結局どうすればいいかわかんなくて保留
+// バー3つ，0度，45度のみ実装
 module ziyuukadai3(CLK,RSTn, PUSH,LEDout,SEG7OUT,SEG7COM);
 input CLK;
 input RSTn;
@@ -17,6 +16,7 @@ reg [3:0] bally;
 
 reg [1:0] wall;
 reg [1:0] is_ball_up;
+reg [2:0] ball_angle; // ボールの角度．0は45度，1は90度，2は135度．視点は一定 //動かしてみてデバッグしたい
 reg [21:0] prescaler;
 reg [30:0] prescaler_ball;
 reg [6:0] color;
@@ -36,7 +36,7 @@ parameter UP_MOST = 4'b0000;
 parameter DOWN_MOST = 4'b1111;
 parameter BAR1_Y = 4'b1100;
 parameter BAR2_Y = 4'b0011;
-parameter LENGTH_OF_BAR = 3'b011;
+parameter LENGTH_OF_BAR = 3'b011; // バーの長さ．固定で頼む
 
 wire carryout;
 	// 多分バーの移動のプリスケーラ
@@ -141,18 +141,33 @@ wire carryout;
 			bally <= BAR1_Y; // ボールの初期位置は今後変更すべき
 			ballx <= bar1 + 3'b1;
 			is_ball_up <= 0;
-
-		end else if(is_ball_up == 1 && bally == BAR1_Y && (ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1))) begin // ボールがやってきてバー1にぶつかった時は
+			ball_angle <= 1;
+		
+		end else if(is_ball_up == 1 && bally == BAR1_Y) begin // ボールがやってきてバー1の左端にぶつかった時には
 			// is_ball_up(ボールの方向)のみ逆転させる
 			ballx <= ballx;
 			bally <= bally;
 			is_ball_up <= 0;
+			if(ballx == bar1) begin
+				ball_angle <= 2;
+			end else if(ballx == bar1 + 1) begin
+				ball_angle <= 1;
+			end else if(ballx == bar1 + 2) begin
+				ball_angle <= 0;
+			end
 
-		end else if(is_ball_up == 0 && bally == BAR2_Y && (ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))) begin // ボールがやってきてバー2にぶつかった時は
+		end else if(is_ball_up == 0 && bally == BAR2_Y ) begin // ボールがやってきてバー2にぶつかった時は
 			// is_ball_up(ボールの方向)のみ逆転させる	
 			ballx <= ballx;
 			bally <= bally;
 			is_ball_up <= 1;
+			if(ballx == bar1) begin
+				ball_angle <= 0;
+			end else if(ballx == bar1 + 1) begin
+				ball_angle <= 1;
+			end else if(ballx == bar1 + 2) begin
+				ball_angle <= 2;
+			end
 
 		end else if(is_ball_up == 0) 	begin // is_ball_upが0で，バーにぶつかっていない時
         
@@ -161,8 +176,17 @@ wire carryout;
 				ballx <= ballx;
 				bally <= bally;
 
-		   	end else if(carryout_ball == 1'b1)  	begin	// 普通は
-				bally <= bally - 3'b1; //　進む
+		   	end else if(carryout_ball == 1'b1)  	begin	
+				if(ball_angle == 0) begin
+					ballx <= ballx + 3'b1;
+					bally <= bally - 3'b1;
+				end else if(ball_angle == 1) begin
+					ballx <= ballx;
+					bally <= bally - 3'b1;
+				end else if(ball_angle == 2) begin
+					ballx <= ballx - 3'b1;
+					bally <= bally - 3'b1;
+				end
 				
 			end else begin		
 				bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
