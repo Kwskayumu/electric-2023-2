@@ -41,9 +41,8 @@ parameter LENGTH_OF_BAR = 3'b011; // バーの長さ．固定で頼む
 wire carryout;
 	// 多分バーの移動のプリスケーラ
     always @ (posedge CLK or negedge RSTn) 	begin	
-        if(RSTn == 1'b0) 	begin	
+        if(RSTn == 1'b0)
             prescaler <= 22'b0;
-		  end
         else if(prescaler == PRESCALER_VALUE) 
             prescaler <= 22'b0;
         else
@@ -53,9 +52,8 @@ wire carryout;
 
 	// ボールの移動のプリスケーラ
 	always @ (posedge CLK or negedge RSTn) 	begin	
-        if(RSTn == 1'b0) 		begin
+        if(RSTn == 1'b0)
             prescaler_ball <= 31'b0;
-		end
         else if(prescaler_ball == PRESCALER_BALL_VALUE)
             prescaler_ball <= 31'b0;
         else
@@ -65,18 +63,18 @@ wire carryout;
 
 	// colorと呼ぶのは相応しくないかも．コード後半で表示時間を管理する時に使うカウンタ
     always @ (posedge CLK) 	begin	
-		  if (carryout == 1'b1) 		begin
-			  if (color == 7'b1111111)
-			     color <= 7'b0;
-			  else
-			     color <= color + 1;
-		  end
+		if (carryout == 1'b1)	begin
+			if (color == 7'b1111111)
+				color <= 7'b0;
+			else
+				color <= color + 1;
+		end
     end
 
     // バー1の移動
-	always @ (posedge CLK or negedge RSTn) 	begin	
+	always @ (posedge CLK or negedge RSTn)	begin	
 		// 初期化
-		if (RSTn == 1'b0) 		begin 
+		if (RSTn == 1'b0)	begin 
 			bar1 <= LEFT_MOST;
 			regpush1 [1:0] <= 2'b0;
 			regpush0 [1:0] <= 2'b0;
@@ -104,18 +102,18 @@ wire carryout;
 	end
 
     // バー2の移動
-	always @ (posedge CLK or negedge RSTn) 	begin	
-		if (RSTn == 1'b0) 		begin
+	always @ (posedge CLK or negedge RSTn)	begin	
+		if (RSTn == 1'b0)	begin
 			bar2 <= RIGHT_MOST - LENGTH_OF_BAR + 1;
 			regpush3 [1:0] <= 2'b0;
 			regpush2 [1:0] <= 2'b0;
 		end
-		else if (carryout) 		begin
+		else if (carryout)	begin
 			regpush3[1] <= regpush3[0];
 			regpush3[0] <= PUSH[3];
 			regpush2[1] <= regpush2[0];
 			regpush2[0] <= PUSH[2];
-			if (regpush3[1:0] == 2'b01 && (!((is_ball_up == 0) && (bally == BAR2_Y) && ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1)))))) 	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
+			if (regpush3[1:0] == 2'b01 && (!((is_ball_up == 0) && (bally == BAR2_Y) && ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))))	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
 				if (bar2 == LEFT_MOST) // 左端ならば
 					bar2 <= bar2; // そのまま
 				else
@@ -134,79 +132,97 @@ wire carryout;
 	
 	// ボールの移動
     // 10bit up counter that counts up at carryout = 1;
-	always @ (posedge CLK or negedge RSTn) 	begin	
+	always @ (posedge CLK or negedge RSTn)	begin	
 		// 初期化
-		if(RSTn == 1'b0) begin
+		if(RSTn == 1'b0)	begin
 			counter <= 0;
 			bally <= BAR1_Y; // ボールの初期位置は今後変更すべき
 			ballx <= bar1 + 3'b1;
 			is_ball_up <= 0;
 			ball_angle <= 1;
-		
-		end else if(is_ball_up == 1 && bally == BAR1_Y) begin // ボールがやってきてバー1の左端にぶつかった時には
+		end
+		else if(is_ball_up == 1 && bally == BAR1_Y) begin // ボールがやってきてバー1にぶつかった時には
 			// is_ball_up(ボールの方向)のみ逆転させる
 			ballx <= ballx;
 			bally <= bally;
 			is_ball_up <= 0;
 			if(ballx == bar1) begin
 				ball_angle <= 2;
-			end else if(ballx == bar1 + 1) begin
+			end 
+			else if(ballx == bar1 + 1) begin
 				ball_angle <= 1;
-			end else if(ballx == bar1 + 2) begin
+			end 
+			else if(ballx == bar1 + 2) begin
 				ball_angle <= 0;
 			end
 
-		end else if(is_ball_up == 0 && bally == BAR2_Y ) begin // ボールがやってきてバー2にぶつかった時は
+		end 
+		else if(is_ball_up == 0 && bally == BAR2_Y)	begin // ボールがやってきてバー2にぶつかった時は
 			// is_ball_up(ボールの方向)のみ逆転させる	
 			ballx <= ballx;
 			bally <= bally;
 			is_ball_up <= 1;
 			if(ballx == bar1) begin
-				ball_angle <= 0;
-			end else if(ballx == bar1 + 1) begin
-				ball_angle <= 1;
-			end else if(ballx == bar1 + 2) begin
 				ball_angle <= 2;
+			end 
+			else if(ballx == bar1 + 1) begin
+				ball_angle <= 1;
+			end 
+			else if(ballx == bar1 + 2) begin
+				ball_angle <= 0;
 			end
 
-		end else if(is_ball_up == 0) 	begin // is_ball_upが0で，バーにぶつかっていない時
+		end else if(is_ball_up == 0)	begin // is_ball_upが0で，バーにぶつかっていない時
         
 			if(bally == UP_MOST && carryout_ball == 1'b1) 	begin // 画面の端ならば
 		    	// 止まる
 				ballx <= ballx;
 				bally <= bally;
-
-		   	end else if(carryout_ball == 1'b1)  	begin	
+		   	end 
+			else if(carryout_ball == 1'b1)  	begin	
 				if(ball_angle == 0) begin
-					ballx <= ballx + 3'b1;
+					ballx <= ballx - 3'b1;
 					bally <= bally - 3'b1;
-				end else if(ball_angle == 1) begin
+				end 
+				else if(ball_angle == 1) begin
 					ballx <= ballx;
 					bally <= bally - 3'b1;
-				end else if(ball_angle == 2) begin
-					ballx <= ballx - 3'b1;
+				end 
+				else if(ball_angle == 2) begin
+					ballx <= ballx + 3'b1;
 					bally <= bally - 3'b1;
 				end
 				
-			end else begin		
+			end 
+			else begin		
 				bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
 			end
 		end
 		  	  
 		else if(is_ball_up == 1) 		begin // is_ball_upが1で，バーにぶつかっていない時
 		  
-		  if(bally == DOWN_MOST && carryout_ball == 1'b1) 	begin // 画面の端ならば
-		  	// 止まる
-			ballx <= ballx;
-			bally <= bally;
+			if(bally == DOWN_MOST && carryout_ball == 1'b1) 	begin // 画面の端ならば
+				// 止まる
+				ballx <= ballx;
+				bally <= bally;
 	
-		  end else if(carryout_ball == 1'b1)  begin	 // 普通は	
-				bally <= bally + 3'b1; // 進む
-				
-        end else 		
-				bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
-		end
-		  
+			end 
+			else if(carryout_ball == 1'b1)  begin	 // 普通は	
+				if(ball_angle == 0) begin
+					ballx <= ballx - 3'b1;
+					bally <= bally + 3'b1;
+				end 
+				else if(ball_angle == 1) begin
+					ballx <= ballx;
+					bally <= bally + 3'b1;
+				end 
+				else if(ball_angle == 2) begin
+					ballx <= ballx + 3'b1;
+					bally <= bally + 3'b1;
+				end
+			end else 		
+					bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
+		end  
 	end
 
 	// 10bit up ledout that counts up at carryout = 1;
