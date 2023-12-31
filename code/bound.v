@@ -146,33 +146,27 @@ wire carryout;
 			ballx <= ballx;
 			bally <= bally;
 			is_ball_up <= 0;
-			if(ballx == bar1) begin
+			if(ballx == bar1)
 				ball_angle <= 2;
-			end 
-			else if(ballx == bar1 + 1) begin
+			else if(ballx == bar1 + 1)
 				ball_angle <= 1;
-			end 
-			else if(ballx == bar1 + 2) begin
+			else if(ballx == bar1 + 2)
 				ball_angle <= 0;
-			end
-
 		end 
 		else if(is_ball_up == 0 && bally == BAR2_Y)	begin // ボールがやってきてバー2にぶつかった時は
 			// is_ball_up(ボールの方向)のみ逆転させる	
 			ballx <= ballx;
 			bally <= bally;
 			is_ball_up <= 1;
-			if(ballx == bar1) begin
+			if(ballx == bar1)
 				ball_angle <= 2;
-			end 
-			else if(ballx == bar1 + 1) begin
+			else if(ballx == bar1 + 1)
 				ball_angle <= 1;
-			end 
-			else if(ballx == bar1 + 2) begin
+			else if(ballx == bar1 + 2)
 				ball_angle <= 0;
-			end
 
-		end else if(is_ball_up == 0)	begin // is_ball_upが0で，バーにぶつかっていない時
+		end 
+		else if(is_ball_up == 0)	begin // is_ball_upが0で，バーにぶつかっていない時
         
 			if(bally == UP_MOST && carryout_ball == 1'b1) 	begin // 画面の端ならば
 		    	// 止まる
@@ -194,19 +188,15 @@ wire carryout;
 				end
 				
 			end 
-			else begin		
+			else	
 				bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
-			end
-		end
-		  	  
+		end  
 		else if(is_ball_up == 1) 		begin // is_ball_upが1で，バーにぶつかっていない時
-		  
 			if(bally == DOWN_MOST && carryout_ball == 1'b1) 	begin // 画面の端ならば
 				// 止まる
 				ballx <= ballx;
 				bally <= bally;
-	
-			end 
+			end
 			else if(carryout_ball == 1'b1)  begin	 // 普通は	
 				if(ball_angle == 0) begin
 					ballx <= ballx - 3'b1;
@@ -220,8 +210,9 @@ wire carryout;
 					ballx <= ballx + 3'b1;
 					bally <= bally + 3'b1;
 				end
-			end else 		
-					bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
+			end 
+			else 		
+				bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
 		end  
 	end
 
@@ -244,12 +235,11 @@ wire carryout;
 			7'b0111001: ledout <= 10'b0100000000 + (bally << 3) + ballx;
 			7'b0111010: ledout <= 10'b0100000000 + (bally << 3) + ballx;
 			
-			default : ledout <= 0;
-			
+			default : ledout <= 0;		
 		endcase
 				
     assign LEDout[9:0] = ledout;     
 	// 多分これはまだ使っていない  
     BIN14to7SEG4 binto7seg3 (CLK,RSTn,counter,SEG7OUT,SEG7COM);
-	 
+	
 endmodule
