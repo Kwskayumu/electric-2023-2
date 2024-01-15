@@ -16,7 +16,7 @@ reg [3:0] bally;
 
 reg [1:0] wall;
 reg [1:0] is_ball_up;
-reg [2:0] ball_angle; // ボールの角度．0は45度，1は90度，2は135度．視点は一定 //動かしてみてデバッグしたい
+reg [2:0] ball_angle; // ボールの角度．0は45度，1は90度，2は135度
 reg [21:0] prescaler;
 reg [30:0] prescaler_ball;
 reg [6:0] color;
@@ -275,5 +275,5 @@ wire carryout;
     assign LEDout[9:0] = ledout;
 // 多分これはまだ使っていない
 BIN14to7SEG4 binto7seg4 (CLK,RSTn,counter,SEG7OUT,SEG7COM);
-	
+// 7セグメントの表示
 endmodule
