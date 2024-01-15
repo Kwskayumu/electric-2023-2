@@ -177,7 +177,7 @@ wire carryout;
 			else if(carryout_ball == 1'b1)  	begin	
 				if(ball_angle == 0) begin
 					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
-						ballx <= ballx;
+						ballx <= ballx - 3'b1;
 						bally <= bally - 3'b1;
 						ball_angle <= 2;
 					end
@@ -193,7 +193,7 @@ wire carryout;
 				end 
 				else if(ball_angle == 2) begin
 					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
-						ballx <= ballx;
+						ballx <= ballx + 3'b1;
 						bally <= bally - 3'b1;
 						ball_angle <= 0;
 					end
@@ -218,7 +218,7 @@ wire carryout;
 			else if(carryout_ball == 1'b1)  begin	 // 普通は	
 				if(ball_angle == 0) begin
 					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
-						ballx <= ballx;
+						ballx <= ballx - 3'b1;
 						bally <= bally + 3'b1;
 						ball_angle <= 2;
 					end
@@ -234,7 +234,7 @@ wire carryout;
 				end 
 				else if(ball_angle == 2) begin
 					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
-						ballx <= ballx;
+						ballx <= ballx + 3'b1;
 						bally <= bally + 3'b1;
 						ball_angle <= 0;
 					end
