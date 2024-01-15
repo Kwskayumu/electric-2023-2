@@ -168,7 +168,6 @@ wire carryout;
 
 		end 
 		else if(is_ball_up == 0)	begin // is_ball_upが0で，バーにぶつかっていない時
-        
 			if(bally == UP_MOST && carryout_ball == 1'b1) 	begin // 画面の端ならば
 		    	// 止まる
 				ballx <= ballx;
