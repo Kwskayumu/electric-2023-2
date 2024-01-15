@@ -176,7 +176,6 @@ wire carryout;
 					counter <= counter + 1;
 				is_counted <= 1'b1;
 		   	end
-		end 
 			else if(carryout_ball == 1'b1)  	begin	
 				if(ball_angle == 0) begin
 					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
