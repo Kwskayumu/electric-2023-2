@@ -141,7 +141,7 @@ wire carryout;
 			is_ball_up <= 0;
 			ball_angle <= 1;
 		end
-		else if(is_ball_up == 1 && bally == BAR1_Y) begin // ボールがやってきてバー1にぶつかった時には
+		else if(is_ball_up == 1 && bally == BAR1_Y && ballx == ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1)))) begin // ボールがやってきてバー1にぶつかった時には
 			// is_ball_up(ボールの方向)のみ逆転させる
 			ballx <= ballx;
 			bally <= bally;
@@ -153,7 +153,7 @@ wire carryout;
 			else if(ballx == bar1 + 2)
 				ball_angle <= 0;
 		end 
-		else if(is_ball_up == 0 && bally == BAR2_Y)	begin // ボールがやってきてバー2にぶつかった時は
+		else if(is_ball_up == 0 && bally == BAR2_Y && ballx == ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))	begin // ボールがやってきてバー2にぶつかった時は
 			// is_ball_up(ボールの方向)のみ逆転させる	
 			ballx <= ballx;
 			bally <= bally;
