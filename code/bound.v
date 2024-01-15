@@ -173,7 +173,7 @@ wire carryout;
 		    	// 止まる
 				ballx <= ballx;
 				bally <= bally;
-				if(is_counted == 0) begin
+				if(is_counted == 1'b0) begin
 					counter <= counter + 1;
 					is_counted <= 1;
 				end
@@ -218,7 +218,7 @@ wire carryout;
 				// 止まる
 				ballx <= ballx;
 				bally <= bally;
-				if(is_counted == 0) begin
+				if(is_counted == 1'b0) begin
 					counter <= counter + 100;
 					is_counted <= 1;
 				end
