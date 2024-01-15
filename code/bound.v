@@ -176,16 +176,32 @@ wire carryout;
 		   	end 
 			else if(carryout_ball == 1'b1)  	begin	
 				if(ball_angle == 0) begin
-					ballx <= ballx - 3'b1;
-					bally <= bally - 3'b1;
+					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
+						ballx <= ballx;
+						bally <= bally - 3'b1;
+						ball_angle <= 2;
+					end
+					else begin
+						ballx <= ballx + 3'b1;
+						bally <= bally - 3'b1;
+						ball_angle <= ball_angle;
+					end
 				end 
 				else if(ball_angle == 1) begin
 					ballx <= ballx;
 					bally <= bally - 3'b1;
 				end 
 				else if(ball_angle == 2) begin
-					ballx <= ballx + 3'b1;
-					bally <= bally - 3'b1;
+					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
+						ballx <= ballx;
+						bally <= bally - 3'b1;
+						ball_angle <= 0;
+					end
+					else begin
+						ballx <= ballx - 3'b1;
+						bally <= bally - 3'b1;
+						ball_angle <= ball_angle;
+					end
 				end
 				
 			end 
@@ -201,16 +217,32 @@ wire carryout;
 			end
 			else if(carryout_ball == 1'b1)  begin	 // 普通は	
 				if(ball_angle == 0) begin
-					ballx <= ballx - 3'b1;
-					bally <= bally + 3'b1;
+					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
+						ballx <= ballx;
+						bally <= bally + 3'b1;
+						ball_angle <= 2;
+					end
+					else begin
+						ballx <= ballx + 3'b1;
+						bally <= bally + 3'b1;
+						ball_angle <= ball_angle;
+					end
 				end 
 				else if(ball_angle == 1) begin
 					ballx <= ballx;
 					bally <= bally + 3'b1;
 				end 
 				else if(ball_angle == 2) begin
-					ballx <= ballx + 3'b1;
-					bally <= bally + 3'b1;
+					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
+						ballx <= ballx;
+						bally <= bally + 3'b1;
+						ball_angle <= 0;
+					end
+					else begin
+						ballx <= ballx - 3'b1;
+						bally <= bally + 3'b1;
+						ball_angle <= ball_angle;
+					end
 				end
 			end 
 			else 		
