@@ -158,11 +158,11 @@ wire carryout;
 			ballx <= ballx;
 			bally <= bally;
 			is_ball_up <= 1;
-			if(ballx == bar1)
+			if(ballx == bar2)
 				ball_angle <= 2;
-			else if(ballx == bar1 + 1)
+			else if(ballx == bar2 + 1)
 				ball_angle <= 1;
-			else if(ballx == bar1 + 2)
+			else if(ballx == bar2 + 2)
 				ball_angle <= 0;
 
 		end 
