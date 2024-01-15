@@ -7,6 +7,7 @@ input [3:0] PUSH;
 output [9:0] LEDout;
 output [6:0] SEG7OUT;
 output [3:0] SEG7COM;
+reg[1:0] is_counted;
 
 reg [9:0] ledout;
 reg [2:0] bar1;
@@ -135,7 +136,7 @@ wire carryout;
 	always @ (posedge CLK or negedge RSTn)	begin	
 		// 初期化
 		if(RSTn == 1'b0)	begin
-			counter <= 0;
+			is_counted <= 1'b0;
 			bally <= BAR1_Y; // ボールの初期位置は今後変更すべき
 			ballx <= bar1 + 3'b1;
 			is_ball_up <= 0;
@@ -167,13 +168,15 @@ wire carryout;
 
 		end 
 		else if(is_ball_up == 0)	begin // is_ball_upが0で，バーにぶつかっていない時
-        
 			if(bally == UP_MOST && carryout_ball == 1'b1) 	begin // 画面の端ならば
 		    	// 止まる
 				ballx <= ballx;
 				bally <= bally;
-				counter <= counter + 1;
-		   	end 
+				if (is_counted == 1'b0)
+					counter <= counter + 1;
+				is_counted <= 1'b1;
+		   	end
+		end 
 			else if(carryout_ball == 1'b1)  	begin	
 				if(ball_angle == 0) begin
 					if(ballx == RIGHT_MOST || ballx == LEFT_MOST ) begin
@@ -213,7 +216,9 @@ wire carryout;
 				// 止まる
 				ballx <= ballx;
 				bally <= bally;
-				counter <= counter + 100;
+				if (is_counted == 1'b0)
+					counter <= counter + 100;
+				is_counted <= 1'b1;
 			end
 			else if(carryout_ball == 1'b1)  begin	 // 普通は	
 				if(ball_angle == 0) begin

@@ -11,8 +11,8 @@ output [3:0] SEG7COM;
 reg [9:0] ledout;
 reg [2:0] bar1;
 reg [2:0] bar2;
-reg [2:0] ballx;
-reg [3:0] bally;
+reg [3:0] ballx;
+reg [4:0] bally;
 
 reg [1:0] wall;
 reg [1:0] is_ball_up;
