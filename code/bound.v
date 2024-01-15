@@ -26,7 +26,7 @@ reg [1:0] regpush1;
 reg [1:0] regpush2;
 reg [1:0] regpush3;
 
-reg [3:0] counter;
+reg [7:0] counter;
 
 parameter PRESCALER_VALUE = 22'd2000; // デフォルトの値を定義
 parameter PRESCALER_BALL_VALUE = 31'd4000000; // デフォルトの値を定義
@@ -242,6 +242,6 @@ wire carryout;
 				
     assign LEDout[9:0] = ledout;
 // 多分これはまだ使っていない
-BIN14to7SEG4 binto7seg3 (CLK,RSTn,counter,SEG7OUT,SEG7COM);
+BIN8to7SEG4 binto7seg3 (CLK,RSTn,counter,SEG7OUT,SEG7COM);
 	
 endmodule
