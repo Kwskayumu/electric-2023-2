@@ -46,8 +46,8 @@ parameter LEFT_MOST = 4'b0000;
 parameter RIGHT_MOST = 4'b1111;
 parameter UP_MOST = 5'b00000;
 parameter DOWN_MOST = 5'b11111;
-parameter BAR2_Y = 5'b11100;
 parameter BAR1_Y = 5'b00011;
+parameter BAR2_Y = 5'b11100;
 parameter LENGTH_OF_BAR = 3'b011; // バーの長さ．固定で頼む
 
 wire carryout;
@@ -99,8 +99,8 @@ wire carryout;
 			regbut1[0] <= button1[0];
 			regbut1[3] <= regbut1[2];
 			regbut1[2] <= button1[1];
-			regbut1[5] <= regbut1[4];
-			regbut1[4] <= button1[2];			
+			// regbut1[5] <= regbut1[4];
+			// regbut1[4] <= button1[2];			
            if (regbut1[1:0] == 2'b01 && (!((is_ball_up == 1) && (bally == BAR1_Y) && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1))))))    begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
                if (bar1 == LEFT_MOST) // 左端ならば
                    bar1 <= bar1; // そのまま
@@ -185,7 +185,7 @@ wire carryout;
                ball_angle <= 0;
 
        end
-       else if(is_ball_up == 0)    begin // is_ball_upが1で，バーにぶつかっていない時
+       else if(is_ball_up == 0)    begin // is_ball_upが0で，バーにぶつかっていない時
            if(bally == DOWN_MOST && carryout_ball == 1'b1)   begin // 画面の端ならば
                // 止まる
                ballx <= ballx;
@@ -270,7 +270,7 @@ wire carryout;
                end
            end
            else       
-               bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
+               bally <= bally; // carryout_ballが切りかわるまで止まり続ける=carryout_ballがボールのスピードを決めている
        end 
    end
 
