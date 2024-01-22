@@ -1,8 +1,10 @@
 // バー3つ，0度，45度のみ実装
-module ziyuukadai3(CLK,RSTn, PUSH,LEDout,SEG7OUT,SEG7COM);
+module ziyuukadai3(CLK,RSTn,button1,LEDout,SEG7OUT,SEG7COM);
 input CLK;
 input RSTn;
-input [3:0] PUSH;
+// input [3:0] PUSH;
+input wire [4:0] button1;
+reg [9:0] regbut1;
 
 output [9:0] LEDout;
 output [6:0] SEG7OUT;
@@ -81,17 +83,22 @@ wire carryout;
 			regpush0 [1:0] <= 2'b0;
 		end
 		else if (carryout) 	begin	
-			regpush1[1] <= regpush1[0];
-			regpush1[0] <= PUSH[1];
-			regpush0[1] <= regpush0[0];
-			regpush0[0] <= PUSH[0];
-			if (regpush1[1:0] == 2'b01 && (!((is_ball_up == 1) && (bally == BAR1_Y) && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1))))))	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
+			regbut1[1] <= regbut1[0];
+			regbut1[0] <= button1[0];
+
+			regbut1[3] <= regbut1[2];
+			regbut1[2] <= button1[1];
+
+			regbut1[5] <= regbut1[4];
+			regbut1[4] <= button1[2];
+			// bar1の動きだけ上手くいかない
+			if (regbut1[1:0] == 2'b01 && (!((is_ball_up == 1) && (bally == BAR1_Y) && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1))))))	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
 				if (bar1 == LEFT_MOST) // 左端ならば
 					bar1 <= bar1; // そのまま
 				else
 					bar1 <= bar1 - 3'b1; // 端じゃなければ左に移動
 			end
-			else if (regpush0[1:0] == 2'b01 && (!((is_ball_up == 1) && (bally == BAR1_Y) && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1)))))) 	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
+			else if (regbut1[3:2] == 2'b01 && (!((is_ball_up == 1) && (bally == BAR1_Y) && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1)))))) 	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
 				if (bar1 == RIGHT_MOST - LENGTH_OF_BAR + 1) // 右端ならば
 					bar1 <= bar1; // そのまま
 				else
@@ -110,17 +117,17 @@ wire carryout;
 			regpush2 [1:0] <= 2'b0;
 		end
 		else if (carryout)	begin
-			regpush3[1] <= regpush3[0];
-			regpush3[0] <= PUSH[3];
-			regpush2[1] <= regpush2[0];
-			regpush2[0] <= PUSH[2];
-			if (regpush3[1:0] == 2'b01 && (!((is_ball_up == 0) && (bally == BAR2_Y) && ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))))	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
+			regbut1[7] <= regbut1[6];
+			regbut1[6] <= button1[3];
+			regbut1[9] <= regbut1[8];
+			regbut1[8] <= button1[4];
+			if (regbut1[7:6] == 2'b01 && (!((is_ball_up == 0) && (bally == BAR2_Y) && ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))))	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
 				if (bar2 == LEFT_MOST) // 左端ならば
 					bar2 <= bar2; // そのまま
 				else
 					bar2 <= bar2 - 3'b1; // 端じゃなければ左に移動
 			end
-			else if (regpush2[1:0] == 2'b01 && (!((is_ball_up == 0) && (bally == BAR2_Y) && ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))))	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
+			else if (regbut1[9:8] == 2'b01 && (!((is_ball_up == 0) && (bally == BAR2_Y) && ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))))	begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
 				if (bar2 == RIGHT_MOST - LENGTH_OF_BAR + 1) // 右端ならば
 					bar2 <= bar2; // そのまま
 				else
@@ -176,7 +183,7 @@ wire carryout;
 					counter <= counter + 1;
 					is_counted <= 1;
 				end
-				counter <= counter;
+				counter <= counter + 2; //ここに入り続けてしまっているっぽい
 		   	end 
 			else if(carryout_ball == 1'b1)  	begin	
 				if(ball_angle == 0) begin
@@ -221,7 +228,7 @@ wire carryout;
 					counter <= counter + 100;
 					is_counted <= 1;
 				end
-				counter <= counter;
+				counter <= counter + 2; //ここに入り続けてしまっているっぽい
 			end
 			else if(carryout_ball == 1'b1)  begin	 // 普通は	
 				if(ball_angle == 0) begin
