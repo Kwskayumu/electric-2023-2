@@ -1,4 +1,4 @@
-//1月22日．得点が入るようになった．
+// バー3つ，0度，45度のみ実装
 module ziyuukadai3(CLK,RSTn,button1,LEDout,SEG7OUT,SEG7COM);
 input CLK;
 input RSTn;
@@ -40,15 +40,17 @@ reg [1:0] regpush3;
 reg [13:0] counter;
 
 
-parameter PRESCALER_VALUE = 22'd2000; // デフォルトの値を定義 //これでかくしないとチャタリングしそうだけど
-parameter PRESCALER_BALL_VALUE = 31'd4000000; // デフォルトの値を定義
+parameter PRESCALER_VALUE = 22'd2000; // デフォルトの値を定義
+parameter PRESCALER_BALL_VALUE = 31'd400000000; // デフォルトの値を定義
 parameter LEFT_MOST = 4'b0000;
 parameter RIGHT_MOST = 4'b1111;
 parameter UP_MOST = 5'b00000;
 parameter DOWN_MOST = 5'b11111;
-parameter BAR1_Y = 5'b00011;
 parameter BAR2_Y = 5'b11100;
+parameter BAR1_Y = 5'b00011;
 parameter LENGTH_OF_BAR = 3'b011; // バーの長さ．固定で頼む
+
+//counter = 0;
 
 wire carryout;
    // 多分バーの移動のプリスケーラ
@@ -62,7 +64,7 @@ wire carryout;
    end
    assign    carryout = (prescaler == PRESCALER_VALUE) ? 1'b1 : 1'b0;
 
-// wire carryout_ball必要じゃない？
+
    // ボールの移動のプリスケーラ
    always @ (posedge CLK or negedge RSTn)  begin  
        if(RSTn == 1'b0)
@@ -84,6 +86,15 @@ wire carryout;
                color <= color + 1;
        end
    end
+	
+//	   always @ (posedge CLK or negedge RSTn)  begin  
+//			if(carryout) begin
+//				regbut1[5] <= regbut1[4];
+//				regbut1[4] <= button1[2];
+//				if(regbut1[5:4] == 2'b01)
+//					counter <= 0;
+//			end
+//		end
 
 
    // バー1の移動
@@ -99,8 +110,11 @@ wire carryout;
 			regbut1[0] <= button1[0];
 			regbut1[3] <= regbut1[2];
 			regbut1[2] <= button1[1];
-			// regbut1[5] <= regbut1[4];
-			// regbut1[4] <= button1[2];			
+			regbut1[5] <= regbut1[4];
+			regbut1[4] <= button1[2];	
+//				if(regbut1[5:4] == 2'b01) begin
+//				counter <= 14'd00000000000000;
+//				end
            if (regbut1[1:0] == 2'b01 && (!((is_ball_up == 1) && (bally == BAR1_Y) && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1))))))    begin // 多分，ボールがやってきてバーにぶつかった時には動かないようにする
                if (bar1 == LEFT_MOST) // 左端ならば
                    bar1 <= bar1; // そのまま
@@ -153,12 +167,12 @@ wire carryout;
    always @ (posedge CLK or negedge RSTn)  begin  
        // 初期化
        if(RSTn == 1'b0)    begin
-        //    counter <= 0;
+//           counter <= 0;
            bally <= BAR1_Y; // ボールの初期位置は今後変更すべき
            ballx <= bar2;
            is_ball_up <= 0;
            ball_angle <= 1;
-			  is_counted <= 0;
+//			  is_counted <= 0;
        end
        else if(is_ball_up == 1 && bally == BAR1_Y && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1)))) begin // ボールがやってきてバー1にぶつかった時には
            // is_ball_up(ボールの方向)のみ逆転させる
@@ -172,7 +186,7 @@ wire carryout;
            else if(ballx == bar1 + 2)
                ball_angle <= 0;
        end
-       else if(is_ball_up == 0 && bally == BAR2_Y &&  ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))  begin // ボールがやってきてバー2にぶつかった時は
+       else if(is_ball_up == 0 && bally == BAR2_Y && ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))  begin // ボールがやってきてバー2にぶつかった時は
            // is_ball_up(ボールの方向)のみ逆転させる   
            ballx <= ballx;
            bally <= bally;
@@ -185,15 +199,15 @@ wire carryout;
                ball_angle <= 0;
 
        end
-       else if(is_ball_up == 0)    begin // is_ball_upが0で，バーにぶつかっていない時
-           if(bally == DOWN_MOST && carryout_ball == 1'b1)   begin // 画面の端ならば
+       else if(is_ball_up == 0)    begin // is_ball_upが1で，バーにぶつかっていない時
+           if(bally == UP_MOST && carryout_ball == 1'b1)   begin // 画面の端ならば
                // 止まる
                ballx <= ballx;
                bally <= bally;
-					if(is_counted == 0) begin
-						counter <= counter + 1;
-						is_counted <= 1;
-					end
+//					if(is_counted == 0) begin
+//						counter <= counter + 1;
+//						is_counted <= 1;
+//					end
            end
            else if(carryout_ball == 1'b1)      begin  
                if(ball_angle == 0) begin
@@ -234,10 +248,10 @@ wire carryout;
                // 止まる
                ballx <= ballx;
                bally <= bally;
-					if(is_counted == 0) begin
-						counter <= counter + 100;
-						is_counted <= 1;
-					end
+//					if(is_counted == 0) begin
+//						counter <= counter + 100;
+//						is_counted <= 1;
+//					end
            end
            else if(carryout_ball == 1'b1)  begin    // 普通は
                if(ball_angle == 0) begin
@@ -264,13 +278,13 @@ wire carryout;
                    end
                    else begin
                        ballx <= ballx - 3'b1;
-                       bally <= bally + 3'b1;
+                       bally <= bally - 3'b1;
                        ball_angle <= ball_angle;
                    end
                end
            end
            else       
-               bally <= bally; // carryout_ballが切りかわるまで止まり続ける=carryout_ballがボールのスピードを決めている
+               bally <= bally; // carryout_ballが切りかわらるまで止まり続ける=carryout_ballがボールのスピードを決めている
        end 
    end
 
@@ -318,3 +332,5 @@ wire carryout;
 BIN14to7SEG4 binto7seg4 (CLK,RSTn,counter,SEG7OUT,SEG7COM);
 // 7セグメントの表示
 endmodule
+
+
