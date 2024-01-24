@@ -40,7 +40,7 @@ reg [1:0] regpush3;
 reg [13:0] counter;
 
 
-parameter PRESCALER_VALUE = 22'd2000; // デフォルトの値を定義
+parameter PRESCALER_VALUE = 22'd2000; // デフォルトの値を定義 //これでかくしないとチャタリングしそうだけど
 parameter PRESCALER_BALL_VALUE = 31'd4000000; // デフォルトの値を定義
 parameter LEFT_MOST = 4'b0000;
 parameter RIGHT_MOST = 4'b1111;
@@ -62,7 +62,7 @@ wire carryout;
    end
    assign    carryout = (prescaler == PRESCALER_VALUE) ? 1'b1 : 1'b0;
 
-
+// wire carryout_ball必要じゃない？
    // ボールの移動のプリスケーラ
    always @ (posedge CLK or negedge RSTn)  begin  
        if(RSTn == 1'b0)
@@ -94,7 +94,7 @@ wire carryout;
            regpush1 [1:0] <= 2'b0;
            regpush0 [1:0] <= 2'b0;
        end
-       else if (carryout)  begin  
+       else if (carryout == 1'b1)  begin  
 			regbut1[1] <= regbut1[0];
 			regbut1[0] <= button1[0];
 			regbut1[3] <= regbut1[2];
@@ -126,7 +126,7 @@ wire carryout;
            regpush3 [1:0] <= 2'b0;
            regpush2 [1:0] <= 2'b0;
        end
-       else if (carryout)  begin
+       else if (carryout == 1'b1)  begin
 			regbut1[7] <= regbut1[6];
 			regbut1[6] <= button1[3];
 			regbut1[9] <= regbut1[8];
@@ -160,7 +160,7 @@ wire carryout;
            ball_angle <= 1;
 			  is_counted <= 0;
        end
-       else if(is_ball_up == 1 && bally == BAR1_Y && ballx == ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1)))) begin // ボールがやってきてバー1にぶつかった時には
+       else if(is_ball_up == 1 && bally == BAR1_Y && ((ballx >= bar1) && (ballx <= bar1 + (LENGTH_OF_BAR - 1)))) begin // ボールがやってきてバー1にぶつかった時には
            // is_ball_up(ボールの方向)のみ逆転させる
            ballx <= ballx;
            bally <= bally;
@@ -172,7 +172,7 @@ wire carryout;
            else if(ballx == bar1 + 2)
                ball_angle <= 0;
        end
-       else if(is_ball_up == 0 && bally == BAR2_Y && ballx == ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))  begin // ボールがやってきてバー2にぶつかった時は
+       else if(is_ball_up == 0 && bally == BAR2_Y &&  ((ballx >= bar2) && (ballx <= bar2 + (LENGTH_OF_BAR - 1))))  begin // ボールがやってきてバー2にぶつかった時は
            // is_ball_up(ボールの方向)のみ逆転させる   
            ballx <= ballx;
            bally <= bally;
